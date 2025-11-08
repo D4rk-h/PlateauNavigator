@@ -22,6 +22,10 @@ class QuantumBackend(ABC):
         pass
 
     @abstractmethod
+    def get_probabilities(self) -> np.ndarray:
+        pass
+
+    @abstractmethod
     def compute_expectation(self, observable: Any) -> float:
         pass
 
