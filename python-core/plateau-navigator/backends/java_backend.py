@@ -1,5 +1,5 @@
 import logging
-
+import numpy as np
 from backend_interface import QuantumBackend
 import requests
 
@@ -85,12 +85,53 @@ class JavaBackend(QuantumBackend):
         response.raise_for_status()
         return response.json()
 
-    def get_state_vector(self) -> 'np.ndarray':
-        pass
+    def get_state_vector(self) -> np.ndarray:
+        response = requests.get(f"{self.api_base}/state/current")
+        response.raise_for_status()
+        state_data = response.json()
+        amplitudes = state_data.get("amplitudes", [])
+        state_vector = []
+        for amp in amplitudes:
+            real = amp.get("real", 0.0)
+            imag = amp.get("imag", 0.0)
+            state_vector.append(complex(real, imag))
+        return np.array(amplitudes, dtype=complex)
 
-    def compute_expectation(self, observable: 'Any') -> float:
-        pass
+    def get_probabilities(self) -> np.ndarray:
+        response = requests.get(f"{self.api_base}/state/probabilities")
+        response.raise_for_status()
+        prob_data = response.json()
+        return np.array(prob_data.get("probabilities", []), dtype=float)
+
+    def reset_state(self) -> str:
+        response = requests.post(f"{self.api_base}/state/reset")
+        response.raise_for_status()
+        return response.json()
+
+    def compute_expectation(self, hamiltonian: np.ndarray) -> float:
+        """
+        Compute <ψ|H|ψ> for VQE
+
+        For now, we'll compute this client-side:
+        1. Get state vector from Java backend
+        2. Compute H|ψ> locally
+        3. Compute <ψ|H|ψ>
+
+        Later: Add dedicated endpoint to your Java API
+        """
+        psi = self.get_state_vector()
+        H_psi = hamiltonian @ psi
+        expectation = np.vdot(psi, H_psi).real
+        return float(expectation)
+
+    def clear_circuit(self):
+        response = requests.post(f"{self.api_base}/circuit/clear")
+        response.raise_for_status()
+        return response.json()
 
     @property
     def name(self) -> str:
         return "JavaBackend"
+
+    def __repr__(self):
+        return f"JavaBackend(url={self.base_url})"
