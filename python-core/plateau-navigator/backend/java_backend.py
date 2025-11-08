@@ -110,14 +110,11 @@ class JavaBackend(QuantumBackend):
 
     def compute_expectation(self, hamiltonian: np.ndarray) -> float:
         """
-        Compute <ψ|H|ψ> for VQE
-
         For now, we'll compute this client-side:
-        1. Get state vector from Java backend
-        2. Compute H|ψ> locally
-        3. Compute <ψ|H|ψ>
-
-        Later: Add dedicated endpoint to your Java API
+            1. Get state vector from Java backend
+            2. Compute H|ψ> locally
+            3. Compute <ψ|H|ψ>
+        Later: Add dedicated endpoint to QubitFlow API
         """
         psi = self.get_state_vector()
         H_psi = hamiltonian @ psi
