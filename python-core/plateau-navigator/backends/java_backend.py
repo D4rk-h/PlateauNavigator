@@ -1,10 +1,9 @@
-import logging
+from .backend_interface import QuantumBackend
 import numpy as np
-from backend_interface import QuantumBackend
 import requests
 
+
 class JavaBackend(QuantumBackend):
-    """Python client for QubitFlow java backend."""
 
     def __init__(self, base_url: str = "http://localhost:8080"):
         self.base_url = base_url
@@ -13,16 +12,16 @@ class JavaBackend(QuantumBackend):
 
     def _verify_connection(self):
         try:
-            response = requests.get(f"{self.base_url}/api/health")
+            response = requests.get(f"{self.base_url}/api/quantum/circuit/info")
             response.raise_for_status()
-            logging.log("Connected to Java backend successfully.")
+            print("Connected to Java backends successfully.")
         except requests.exceptions.RequestException as e:
-            raise ConnectionError(f"Failed to connect to Java backend at port {self.port}") from e
+            raise ConnectionError(f"Failed to connect to Java backends at {self.base_url}") from e
 
     def create_circuit(self, num_qubits: int) -> dict:
         response = requests.post(
             f"{self.api_base}/circuit/create",
-            params={"n_qubit": num_qubits}
+            params={"qubits": num_qubits}
         )
         response.raise_for_status()
         return response.json()
@@ -95,7 +94,8 @@ class JavaBackend(QuantumBackend):
             real = amp.get("real", 0.0)
             imag = amp.get("imag", 0.0)
             state_vector.append(complex(real, imag))
-        return np.array(amplitudes, dtype=complex)
+
+        return np.array(state_vector, dtype=complex)
 
     def get_probabilities(self) -> np.ndarray:
         response = requests.get(f"{self.api_base}/state/probabilities")
@@ -111,7 +111,7 @@ class JavaBackend(QuantumBackend):
     def compute_expectation(self, hamiltonian: np.ndarray) -> float:
         """
         For now, we'll compute this client-side:
-            1. Get state vector from Java backend
+            1. Get state vector from Java backends
             2. Compute H|ψ> locally
             3. Compute <ψ|H|ψ>
         Later: Add dedicated endpoint to QubitFlow API
@@ -124,7 +124,9 @@ class JavaBackend(QuantumBackend):
     def clear_circuit(self):
         response = requests.post(f"{self.api_base}/circuit/clear")
         response.raise_for_status()
-        return response.json()
+        if response.text.strip():
+            return response.json()
+        return {"status": "cleared"}
 
     @property
     def name(self) -> str:
