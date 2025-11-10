@@ -1,7 +1,6 @@
-from .backend_interface import QuantumBackend
+from ..backend_interface import QuantumBackend
 import numpy as np
 import requests
-
 
 class JavaBackend(QuantumBackend):
 
