@@ -1,8 +1,11 @@
+from ._parse_file import ParseFile
+
+
 class SendCode:
-    def __init__(self, is_up: bool, port: int, QParser_instance: ParseFile):
+    def __init__(self, is_up: bool, port: int, parser_instance: ParseFile):
         self.is_up = is_up
         self.port = port
-        self.script_lines_list = QParser_instance._read()
+        self.script_lines_list = parser_instance._read()
 
     def _is_server_up(self):
         pass
