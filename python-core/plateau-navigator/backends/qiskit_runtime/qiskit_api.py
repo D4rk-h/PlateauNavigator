@@ -1,9 +1,7 @@
-# qiskit_api.py
-
 import requests
 import os
 import time
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
 
 

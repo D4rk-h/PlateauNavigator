@@ -1,8 +1,8 @@
-from ..backend_interface import QuantumBackend
+from ..backend_interface import DVBackend
 import numpy as np
 import requests
 
-class JavaBackend(QuantumBackend):
+class JavaBackend(DVBackend):
 
     def __init__(self, base_url: str = "http://localhost:8080"):
         self.base_url = base_url

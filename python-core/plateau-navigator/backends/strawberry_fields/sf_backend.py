@@ -3,7 +3,7 @@ from typing import Dict, Any, List, Optional, Union
 import numpy as np
 import strawberryfields as sf
 from strawberryfields import ops
-import operators as op
+from . import operators as op
 
 
 # Maps gate_type string -> (SF ops class, required_modes, required_params)
