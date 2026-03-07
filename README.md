@@ -1,23 +1,23 @@
 # PlateauNavigator
-
 > **⚠️ Under Active Development** - This project is currently being built.
 
-A production-grade quantum computing framework for VQE optimization with ML-powered barren plateau mitigation.
+A research framework for studying VQE behavior and comparing performance between **discrete variable (DV)** and **continuous variable (CV)** quantum computing approaches across different ansatz configurations.
 
 ## What is this?
 
-PlateauNavigator helps detect and mitigate **barren plateaus** in Variational Quantum Eigensolver (VQE) algorithms. It combines:
-- High-performance quantum simulation (Java backend, up to 25 qubits)
-- Machine learning prediction (Python)
-- Multiple quantum backends (Java simulator, Qiskit, PennyLane, IBM Quantum)
-- Adaptive optimization strategies
+PlateauNavigator is a study tool built to investigate how VQE performs differently depending on whether you're working in the DV or CV quantum computing paradigm. It lets you run experiments across multiple ansatz configurations, collect results, and visualize them — with the goal of understanding things like barren plateau behavior, convergence, and optimization landscape differences between the two paradigms.
+
+It combines:
+- A high-performance quantum simulator (Java backend, up to 25 qubits)
+- Support for multiple backends (Java simulator, Qiskit, PennyLane, IBM Quantum)
+- A Python layer for running experiments, analyzing results, and plotting
+- ML-based tools to study and predict barren plateau occurrence
 
 ## Architecture
-
 ```
 ┌─────────────────────────────────────┐
 │   Python Research Layer             │
-│   (ML Models, Experiments, Viz)     │
+│   (Experiments, Analysis, Viz)      │
 └─────────────┬───────────────────────┘
               │ REST API
 ┌─────────────▼───────────────────────┐
@@ -26,41 +26,15 @@ PlateauNavigator helps detect and mitigate **barren plateaus** in Variational Qu
 └─────────────────────────────────────┘
 ```
 
-## Current Status
-
-- [x] Java quantum simulator (25 qubits)
-- [ ] REST API endpoints
-- [ ] VQE engine
-- [ ] Python client library
-- [ ] ML predictor
-- [ ] Adaptive strategies
-- [ ] IBM Quantum integration
-
-
-## Tech Stack
-
-**Backend**: Java 17, Spring Boot, Maven  
-**Frontend**: Python 3.9+, NumPy, Qiskit, PennyLane  
-**ML**: scikit-learn, XGBoost  
-**Hardware**: IBM Quantum Cloud
-
-## Repository Structure
-
-```
-plateaunavigator/
-├── java-backend/          # High-performance quantum simulator + REST API
-├── python-client/         # Python client library
-├── notebooks/             # Jupyter notebooks for experiments
-├── docs/                  # Documentation
-└── examples/              # Usage examples
-```
-
 ## Research Goal
 
-Investigate and mitigate barren plateaus in VQE through:
-1. ML-based prediction of plateau occurrence
-2. Adaptive strategy selection
-3. Validation on real quantum hardware
+Compare and study VQE performance between the DV and CV quantum computing paradigms by:
+1. Running VQE experiments across different ansatz configurations
+2. Analyzing how barren plateaus manifest differently in each paradigm
+3. Visualizing and plotting results to surface meaningful behavioral differences
+4. Validating findings on real quantum hardware
+
+---
 
 ## License
 
