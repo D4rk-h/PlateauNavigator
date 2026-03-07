@@ -2,7 +2,7 @@ import time
 from typing import Any, Dict, List, Optional, Callable
 from .qiskit_api import QiskitRuntimeAPI
 from ..backend_interface import QuantumBackend
-from ansatz_translation.ansatz_to_qasm import AnsatzToQasm
+from ansatz.ansatz_translation import DVAnsatzToQASM
 import numpy as np
 
 
@@ -15,7 +15,7 @@ class QiskitBackend(QuantumBackend):
         self.shots = shots
         self.api = QiskitRuntimeAPI(api_key=api_key, crn=crn)
         self.num_qubits = 0
-        self.qasm_converter: Optional[AnsatzToQasm] = None
+        self.qasm_converter: Optional[DVAnsatzToQASM] = None
         self.current_qasm: Optional[str] = None
         self.last_result: Optional[Dict[str, Any]] = None
         self._verify_backend()
@@ -33,7 +33,7 @@ class QiskitBackend(QuantumBackend):
 
     def create_circuit(self, num_qubits: int) -> Dict[str, Any]:
         self.num_qubits = num_qubits
-        self.qasm_converter = AnsatzToQasm(num_qubits)
+        self.qasm_converter = DVAnsatzToQASM(num_qubits)
         return {
             "status": "circuit_created",
             "num_qubits": num_qubits,
