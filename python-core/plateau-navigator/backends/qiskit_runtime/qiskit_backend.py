@@ -295,6 +295,3 @@ class QiskitBackend(DVBackend):
         raise TimeoutError(
             f"Job {job_id} did not complete within {self.job_timeout}s."
         )
-    
-if __name__ == "__main__":
-    print("Hola")
