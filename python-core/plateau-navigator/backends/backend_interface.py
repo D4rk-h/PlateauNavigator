@@ -3,42 +3,105 @@ from typing import Dict, Any, List, Union
 import numpy as np
 
 
-
 class DVBackend(ABC):
     """
     Abstract base class for Discrete Variable (DV) quantum backends.
 
-    DV quantum computation operates on qubits, with finite-dimensional 
-    Hilbert spaces.
+    DV quantum computation operates on qubits with 2^n dimensional Hilbert space.
+    Concrete implementations: QiskitBackend (IBM), PennyLaneBackend, JavaBackend.
+
+    Gate convention:
+        Single-qubit: 'h', 'x', 'y', 'z', 's', 't', 'rx', 'ry', 'rz'
+        Two-qubit:    'cx'/'cnot', 'swap', 'cz'
+        Three-qubit:  'ccx'/'toffoli'
+        Parametric gates pass angles via **params: theta, phi, lam (lambda)
     """
 
     @abstractmethod
     def create_circuit(self, num_qubits: int) -> Dict[str, Any]:
+        """Initialize an empty circuit for num_qubits qubits."""
         pass
 
     @abstractmethod
     def add_gate(self, gate_type: str, qubits: List[int], **params) -> Dict[str, Any]:
+        """
+        Queue a gate operation.
+
+        Args:
+            gate_type: Gate identifier string (see class docstring).
+            qubits:    List of qubit indices the gate acts on.
+            **params:  Gate parameters — theta, phi, lam for rotation gates.
+        """
         pass
 
     @abstractmethod
     def execute_circuit(self) -> Dict[str, Any]:
+        """Execute the queued circuit and store results internally."""
         pass
 
     @abstractmethod
     def get_state_vector(self) -> np.ndarray:
+        """
+        Return the full statevector as complex np.ndarray of shape (2^n,).
+        Only available on simulator backends — raises NotImplementedError
+        on real hardware.
+        """
         pass
 
     @abstractmethod
     def get_probabilities(self) -> np.ndarray:
+        """
+        Return measurement probabilities for all 2^n computational basis states.
+        Shape: (2^n,). Entry i = P(measuring bitstring i).
+        """
         pass
 
     @abstractmethod
-    def compute_expectation(self, observable: Any) -> float:
+    def compute_expectation(
+        self,
+        observable: Union[np.ndarray, List[tuple]]
+    ) -> float:
+        """
+        Compute ⟨ψ|H|ψ⟩.
+
+        Args:
+            observable: Either:
+                - np.ndarray: Full Hermitian matrix, shape (2^n, 2^n).
+                              Will be Pauli-decomposed internally.
+                - List[tuple]: Pre-decomposed Pauli terms as
+                               [('IZX', 0.5), ('ZZI', -0.3), ...].
+                               Use this to avoid recomputing decomposition
+                               across VQE iterations.
+        Returns:
+            Real-valued expectation value.
+        """
+        pass
+
+    @abstractmethod
+    def reset_state(self) -> None:
+        """
+        Reset the quantum state to |0...0⟩ and clear the operation queue.
+        Called by VQE at the start of every energy evaluation.
+        """
+        pass
+
+    @abstractmethod
+    def clear_circuit(self) -> None:
+        """
+        Clear the operation queue without resetting execution results.
+        Called by VQE between parameter evaluations.
+        """
         pass
 
     @property
     @abstractmethod
     def name(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def n_qubits(self) -> int:
+        """Number of qubits in the current circuit."""
         pass
 
 
