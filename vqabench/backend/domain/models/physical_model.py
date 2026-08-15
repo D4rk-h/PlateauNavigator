@@ -119,3 +119,109 @@ class KerrOscillatorModel(BosonicModel):
             "chi": self.chi,
             "non_gaussian": self.is_non_gaussian(),
         }
+
+@dataclass
+class FermionicModel(PhysicalModel, ABC):
+    def preferred_paradigm(self) -> Paradigm:
+        return Paradigm.DV
+
+@dataclass
+class IsingModel(FermionicModel):
+    j: float = 1.0
+    h: float = 0.5
+    boundary: BoundaryCondition = BoundaryCondition.OPEN
+    geometry: LatticeGeometry = LatticeGeometry.CHAIN
+
+    def _validate(self):
+        if self.geometry == LatticeGeometry.SQUARE:
+            side = int(self.n_sites ** 0.5)
+            if side * side != self.n_sites:
+                raise ValueError(f"n_sites={self.n_sites} is not a perfect square for SQUARE geometry")
+
+    def n_interactions(self) -> int:
+        if self.geometry == LatticeGeometry.CHAIN:
+            n = self.n_sites
+            return n if self.boundary == BoundaryCondition.PERIODIC else n - 1
+        if self.geometry == LatticeGeometry.SQUARE:
+            side = int(self.n_sites ** 0.5)
+            bonds = 2 * side * (side - 1)
+            if self.boundary == BoundaryCondition.PERIODIC:
+                bonds += side
+            return bonds
+        return self.n_sites * (self.n_sites - 1) // 2 
+
+    def is_critical(self) -> bool:
+        return abs(self.h) == abs(self.j)
+
+    def summary(self) -> dict:
+        return {
+            **super().summary(),
+            "j": self.j,
+            "h": self.h,
+            "boundary": self.boundary.name,
+            "geometry": self.geometry.name,
+            "critical": self.is_critical(),
+        }
+
+@dataclass
+class HeisenbergModel(FermionicModel):
+    Jx: float = 1.0
+    Jy: float = 1.0
+    Jz: float = 1.0
+    boundary: BoundaryCondition = BoundaryCondition.OPEN
+
+    def _validate(self) -> None:
+        pass
+
+    def n_interactions(self) -> int:
+        n = self.n_sites
+        return n if self.boundary == BoundaryCondition.PERIODIC else n - 1
+
+    def model_subtype(self) -> str:
+        if self.Jx == self.Jy == self.Jz:
+            return "XXX"
+        if self.Jx == self.Jy:
+            return "XXZ"
+        return "XYZ"
+
+    def summary(self) -> dict:
+        return {
+            **super().summary(),
+            "Jx": self.Jx,
+            "Jy": self.Jy,
+            "Jz": self.Jz,
+            "boundary": self.boundary.name,
+            "subtype": self.model_subtype(),            
+        }
+
+@dataclass
+class FermiHubbardModel(FermionicModel):
+    t: float = 1.0
+    u: float = 2.0
+    mu: float = 0.0
+    boundary: BoundaryCondition = BoundaryCondition.OPEN
+
+    def _validate(self) -> None:
+        if self.n_sites < 2:
+            raise ValueError("Fermi-Hubbard requires at least 2 sites")
+
+    def n_qubits(self) -> int:
+        return 2 * self.n_sites
+
+    def n_interactions(self) -> int:
+        hopping = self.n_sites if self.boundary == BoundaryCondition.PERIODIC else self.n_sites - 1
+        return 2 * hopping + self.n_sites
+
+    def is_half_filling(self) -> bool:
+        return self.mu == self.u / 2
+
+    def summary(self) -> dict:
+        return {
+            **super().summary(),
+            "t": self.t,
+            "u": self.u,
+            "mu": self.mu,
+            "boundary": self.boundary.name,
+            "n_qubits": self.n_qubits(),
+            "half_filling": self.is_half_filling(),
+        }
