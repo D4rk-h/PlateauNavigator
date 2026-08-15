@@ -87,33 +87,9 @@ class Ansatz:
 
         if self.entanglement_pattern:
             gates_per_layer += entanglement_gates.get(
-                self.entanglement_pattern,
-                self.n_sites - 1
+                self.entanglement_pattern, self.n_sites - 1
             )
-
         return gates_per_layer * self.n_layers
-
-    def cv_complexity(self) -> dict:
-        if self.paradigm == Paradigm.DV:
-            raise ValueError(
-                "CV complexity is only defined for CV ansatze."
-            )
-        gaussian_ops = self.n_layers * self.n_sites
-        non_gaussian_ops = self.n_layers * self.non_gaussian_ops_per_layer
-        return {
-            "gaussian_ops": gaussian_ops,
-            "non_gaussian_ops": non_gaussian_ops,
-            "has_universal": non_gaussian_ops > 0,
-        }
 
     def has_non_gaussian(self) -> bool:
         return self.paradigm == Paradigm.CV and self.non_gaussian_ops_per_layer > 0
-
-    def expressibility_score(self) -> float:
-        """
-        Placeholder for ansatz expressibility estimation.
-
-        For DV: based on Haar random fidelity distrbution
-        For CV: based on Wigner function fidelity in truncated Fock space, weighted by non-Gaussian operations
-        """
-        raise NotImplementedError("Expressibility computation requires the expressibility service.")
