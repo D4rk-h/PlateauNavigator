@@ -97,6 +97,7 @@ class BoseHubbardModel(BosonicModel):
 class KerrOscillatorModel(BosonicModel):
     omega: float = 1.0
     chi: float = 0.1
+    n_sites: int = 1
 
     def __post_init__(self):
         self.n_sites = 1
