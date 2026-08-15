@@ -225,3 +225,65 @@ class FermiHubbardModel(FermionicModel):
             "n_qubits": self.n_qubits(),
             "half_filling": self.is_half_filling(),
         }
+
+_KNOWN_MOLECULES: dict[str, int] = {
+    "H2": 4,
+    "LiH": 12,
+    "H2O": 14,
+    "BeH2": 14,
+    "N2": 20,
+}
+
+_KNOWN_ELECTRONS: dict[str, int] = {
+    "H2": 2,
+    "LiH": 4,
+    "H2O": 10,
+    "BeH2": 6,
+    "N2": 14,
+}
+
+@dataclass
+class MoleculeModel(PhysicalModel):
+    molecule_name: str = "H2"
+    basis_set: str = "sto-3g"
+    charge: int = 0
+    multiplicity: int = 1
+    bond_length: Optional[float] = None
+
+    def __post_init__(self):
+        if self.molecule_name in _KNOWN_MOLECULES:
+            self.n_sites = _KNOWN_MOLECULES[self.molecule_name]
+        super().__post_init__()
+
+    def _validate(self) -> None:
+        if not (-2 <= self.charge <= 2):
+            raise ValueError("charge must be between -2 and 2")
+        if self.multiplicity < 1:
+            raise ValueError("multiplicity must be at least 1")
+        if self.bond_length is not None and self.bond_length <= 0:
+            raise ValueError("bond_length must be positive")
+
+    def preferred_paradigm(self) -> Paradigm:
+        return Paradigm.DV
+
+    def n_interactions(self) -> int:
+        n = self.n_sites
+        return n + n * (n - 1) // 2 + n * (n - 1) * (n - 2) * (n - 3) // 24
+
+    def n_electrons(self) -> int:
+        return _KNOWN_ELECTRONS.get(self.molecule_name, self.n_sites // 2)
+
+    def is_known(self) -> bool:
+        return self.molecule_name in _KNOWN_MOLECULES
+
+    def summary(self) -> dict:
+        return {
+            **super().summary(),
+            "molecule": self.molecule_name,
+            "basis_set": self.basis_set,
+            "charge": self.charge,
+            "multiplicity": self.multiplicity,
+            "bond_length": self.bond_length,
+            "n_electrons": self.n_electrons(),
+            "known": self.is_known(),
+        }
