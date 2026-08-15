@@ -249,10 +249,13 @@ class MoleculeModel(PhysicalModel):
     charge: int = 0
     multiplicity: int = 1
     bond_length: Optional[float] = None
+    n_sites: int = 0
 
     def __post_init__(self):
         if self.molecule_name in _KNOWN_MOLECULES:
             self.n_sites = _KNOWN_MOLECULES[self.molecule_name]
+        if self.n_sites <= 0:
+            raise ValueError(f"Unknown molecule '{self.molecule_name}'. Provide n_sites explicitly.")
         super().__post_init__()
 
     def _validate(self) -> None:
