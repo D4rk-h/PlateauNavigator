@@ -1,6 +1,6 @@
 import numpy as np
 from backend.domain.models.ansatz import Ansatz
-from backend.domain.models.expressibility import CVExpressibilityResult, DVExpressibilityResult, ExpressibilityType
+from backend.domain.models.expressibility import CVExpressibilityResult, DVExpressibilityResult, ExpressibilityMethod
 from backend.domain.models.hamiltonian import Paradigm
 from backend.domain.ports.expressibility_port import ExpressibilityPort
 
@@ -26,7 +26,7 @@ class ExpressibilityService:
 
         return DVExpressibilityResult(
             ansatz_id=ansatz.id,
-            method=ExpressibilityType.KL_DIVERGENCE,
+            method=ExpressibilityMethod.KL_DIVERGENCE,
             score=kl,
             n_samples=len(fidelities),
             n_bins=self._n_bins,
@@ -57,7 +57,7 @@ class ExpressibilityService:
 
         return CVExpressibilityResult(
             ansatz_id=ansatz.id,
-            method=ExpressibilityType.HAAR_FOCK_TRUNCATED,
+            method=ExpressibilityMethod.HAAR_FOCK_TRUNCATED,
             score=kl,
             n_samples=len(fidelities),
             n_bins=self._n_bins,
