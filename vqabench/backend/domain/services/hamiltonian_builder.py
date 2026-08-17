@@ -13,17 +13,17 @@ from backend.domain.models.physical_model import (
 class HamiltonianBuilderService:
     def build(self, model: PhysicalModel) -> Hamiltonian:
         if isinstance(model, BoseHubbardModel):
-            return self._build_bose_hubbard_hamiltonian(model)
+            return self._build_bose_hubbard(model)
         if isinstance(model, KerrOscillatorModel):
-            return self._build_kerr_oscillator_hamiltonian(model)
+            return self._build_kerr_oscillator(model)
         if isinstance(model, IsingModel):
-            return self._build_ising_hamiltonian(model)
+            return self._build_ising(model)
         if isinstance(model, HeisenbergModel):
-            return self._build_heisenberg_hamiltonian(model)
+            return self._build_heisenberg(model)
         if isinstance(model, FermiHubbardModel):
-            return self._build_fermi_hubbard_hamiltonian(model)
+            return self._build_fermi_hubbard(model)
         if isinstance(model, MoleculeModel):
-            return self._build_molecule_hamiltonian(model)
+            return self._build_molecule(model)
         raise ValueError(
             f"No Hamiltonian builder registered for {type(model).__name__}. Implement a builder method and register it in build()."
         ) 
