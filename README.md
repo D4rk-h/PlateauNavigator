@@ -1,11 +1,7 @@
 # PlateauNavigator
-> ⚠️ **Deprecated — Scheduled for full rebuild.** This code is kept for reference only. Do not use for new projects.
+> ⚠️ **Under Active Development**
 
 A research framework for studying VQE behavior and comparing performance between **discrete variable (DV)** and **continuous variable (CV)** quantum computing approaches across different ansatz configurations.
-
-## What is this?
-
-PlateauNavigator is a study tool built to investigate how VQE performs differently depending on whether you're working in the DV or CV quantum computing paradigm. It lets you run experiments across multiple ansatz configurations, collect results, and visualize them — with the goal of understanding things like barren plateau behavior, convergence, and optimization landscape differences between the two paradigms.
 
 ## Research Goal
 
@@ -19,8 +15,11 @@ Compare and study VQE performance between the DV and CV quantum computing paradi
 
 ## License
 
-Apache 2.0 [LICENSE]
+Apache 2.0 [LICENSE](LICENSE)
 
 ---
+
+## Contributions
+Any contribution is welcome
 
 **Note**: This is a research project in active development. Star ⭐ and watch for updates!
