@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, ClassVar
 from enum import Enum, auto
 import uuid
 
@@ -23,6 +23,11 @@ class Circuit:
     description: Optional[str] = None
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
+    _VALID_SOURCE_TYPES: ClassVar[dict] = {
+        Paradigm.DV: {CircuitSourceType.QASM3, CircuitSourceType.QISKIT},
+        Paradigm.CV: {CircuitSourceType.PYTHON_MRMUSTARD},
+    }
+
     def __post_init__(self):
         if self.n_sites <= 0:
             raise ValueError("n_sites must be a positive integer.")
@@ -31,12 +36,7 @@ class Circuit:
         if not isinstance(self.paradigm, Paradigm):
             raise ValueError("paradigm must be an instance of Paradigm Enum.")
 
-        _VALID_SOURCE_TYPES = {
-            Paradigm.DV: {CircuitSourceType.QASM3, CircuitSourceType.QISKIT},
-            Paradigm.CV: {CircuitSourceType.PYTHON_MRMUSTARD},
-        }
-
-        valid_types = _VALID_SOURCE_TYPES[self.paradigm]
+        valid_types = self._VALID_SOURCE_TYPES[self.paradigm]
         if self.source_type not in valid_types:
             raise ValueError(
                 f"{self.paradigm.name} circuits must use one of "
