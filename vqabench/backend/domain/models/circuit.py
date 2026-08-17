@@ -11,6 +11,7 @@ class CircuitSourceType(Enum):
     QASM3 = auto()
     QISKIT = auto()
     PYTHON_MRMUSTARD = auto()
+    PENNYLANE = auto()
 
 @dataclass
 class Circuit:
@@ -25,7 +26,7 @@ class Circuit:
 
     _VALID_SOURCE_TYPES: ClassVar[dict] = {
         Paradigm.DV: {CircuitSourceType.QASM3, CircuitSourceType.QISKIT},
-        Paradigm.CV: {CircuitSourceType.PYTHON_MRMUSTARD},
+        Paradigm.CV: {CircuitSourceType.PYTHON_MRMUSTARD, CircuitSourceType.PENNYLANE},
     }
 
     def __post_init__(self):
