@@ -91,5 +91,16 @@ class Ansatz:
             )
         return gates_per_layer * self.n_layers
 
+    def cv_complexity(self) -> dict:
+        if self.paradigm == Paradigm.DV:
+            raise ValueError("cv_complexity is only defined for CV ansatze")
+        gaussian_ops = self.n_layers * self.n_sites
+        non_gaussian_ops = self.n_layers * self.non_gaussian_ops_per_layer
+        return {
+            "gaussian_ops": gaussian_ops,
+            "non_gaussian_ops": non_gaussian_ops,
+            "has_universal": non_gaussian_ops > 0,
+        }
+
     def has_non_gaussian(self) -> bool:
         return self.paradigm == Paradigm.CV and self.non_gaussian_ops_per_layer > 0

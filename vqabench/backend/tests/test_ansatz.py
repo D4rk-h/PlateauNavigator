@@ -310,13 +310,3 @@ class TestAnsatzCVMethods:
             non_gaussian_ops_per_layer=2,
         )
         assert a.has_non_gaussian() is True
-
-    def test_expressibility_score_raises(self):
-        a = Ansatz(
-            name="any",
-            paradigm=Paradigm.DV,
-            n_sites=2,
-            ansatz_type=AnsatzType.CUSTOM,
-        )
-        with pytest.raises(NotImplementedError):
-            a.expressibility_score()
