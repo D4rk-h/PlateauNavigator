@@ -2,21 +2,21 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 
-class ExpressibilityType(Enum):
+class ExpressibilityMethod(Enum):
     KL_DIVERGENCE = auto()
     HAAR_FOCK_TRUNCATED = auto()
 
 @dataclass
 class ExpressibilityResult:
     ansatz_id: str
-    method: ExpressibilityType
+    method: ExpressibilityMethod
     score: float
     n_samples: int
     n_bins: int
     fidelity_distribution: list[float]
     haar_distribution: list[float]
 
-    def is_highly_expressive(self, threshold: float = 0.1) -> bool:
+    def is_highly_expressible(self, threshold: float = 0.1) -> bool:
         return self.score < threshold
 
     def summary(self) -> dict:
@@ -25,7 +25,7 @@ class ExpressibilityResult:
             "method": self.method.name,
             "score": round(self.score, 6),
             "n_samples": self.n_samples,
-            "highly_expressive": self.is_highly_expressive(),
+            "highly_expressive": self.is_highly_expressible(),
         }
 
 @dataclass
