@@ -153,7 +153,7 @@ class TestDVSummary:
     def test_summary_highly_expressible_is_bool(self):
         service = make_service(uniform_fidelities())
         result = service.compute(make_dv_ansatz())
-        assert isinstance(result.summary()["highly_expressive"], bool)
+        assert isinstance(result.summary()["highly_expressible"], bool)
 
 class TestCVExpressibility:
 

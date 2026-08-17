@@ -25,7 +25,7 @@ class ExpressibilityResult:
             "method": self.method.name,
             "score": round(self.score, 6),
             "n_samples": self.n_samples,
-            "highly_expressiible": self.is_highly_expressible(),
+            "highly_expressible": self.is_highly_expressible(),
         }
 
 @dataclass
