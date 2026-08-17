@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Union, ClassVar
 from enum import Enum, auto
 import uuid
 
@@ -44,7 +44,7 @@ class CVTerm:
 
 @dataclass
 class Hamiltonian:
-    _PARADIGM_TYPES = {
+    _PARADIGM_TYPES: ClassVar[dict] = {
         Paradigm.DV: PauliTerm,
         Paradigm.CV: CVTerm,
     }
