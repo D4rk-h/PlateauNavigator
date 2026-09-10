@@ -2,10 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Union
 from enum import Enum, auto
 
-from backend.domain.models.experiment import (
-    ComparisonExperiment,
-    SingleExperiment,
-)
+from backend.domain.models.experiment import ComparisonExperiment, SingleExperiment
 from backend.domain.ports.experiment_repository import ExperimentRepository
 
 
